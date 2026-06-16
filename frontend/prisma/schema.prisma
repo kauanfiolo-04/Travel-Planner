@@ -85,7 +85,7 @@ model Location {
   id            String @id @default(cuid())
   locationTitle String
   lat           Float
-  long          Float
+  lng           Float
   trip          Trip   @relation(fields: [tripId], references: [id])
   tripId        String
   order         Int    @default(0)
