@@ -85,7 +85,9 @@ const TripDetailClient = ({ trip }: TripDetailClientProps) => {
                     </div>
                   </div>
 
-                  
+                  <div className="flex items-start">
+
+                  </div>
                 </div>
               </div>
             </div>
