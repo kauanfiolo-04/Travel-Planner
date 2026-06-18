@@ -8,6 +8,7 @@ import type { Trip, Location } from "@/app/generated/prisma/browser";
 import { Button } from "./ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/Tabs";
 import Map from "./Map";
+import SortableItinerary from "./SortableItinerary";
 
 interface TripDetailClientProps {
   trip: Trip & { locations: Location[] };
@@ -139,7 +140,7 @@ const TripDetailClient = ({ trip }: TripDetailClientProps) => {
                 </Link>
               </div>
             ) : (
-              <SortableItinerary />
+              <SortableItinerary locations={trip.locations} tripId={trip.id} />
             )}
           </TabsContent>
         </Tabs>
