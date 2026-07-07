@@ -1,8 +1,19 @@
 "use client";
+
 import { useEffect, useRef, useState } from 'react';
-import Globe, { GlobeMethods } from 'react-globe.gl';
+import type { GlobeMethods } from 'react-globe.gl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { MapPin } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const Globe = dynamic(() => import('react-globe.gl'), { 
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-[600px] w-full">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
+    </div>
+  )
+});
 
 export interface TransformedLocation {
   lat: number;
@@ -13,22 +24,21 @@ export interface TransformedLocation {
 
 const GlobePage = () => {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [visitedCountries, setVisitedCountries] = useState<Set<string>>(new Set());
   const [locations, setLocations] = useState<TransformedLocation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
         const response = await fetch("/api/trips");
-
         const data = await response.json();
-
         setLocations(data);
-
         const countries = new Set<string>(data.map((loc: TransformedLocation) => loc.country));
-
         setVisitedCountries(countries);
       } catch (error) {
         console.error(error);
@@ -41,13 +51,36 @@ const GlobePage = () => {
   }, []);
 
   useEffect(() => {
-    const globe = globeRef.current;
+    if (!containerRef.current) return;
 
-    if (globe) {
-      globe.controls().autoRotate = true;
-      globe.controls().autoRotateSpeed = 0.5;
-    }
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width } = entry.contentRect;
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+        const height = isMobile ? 400 : 600; 
+        
+        setDimensions({ width, height });
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
   }, []);
+
+useEffect(() => {
+    setTimeout(() => {
+      const globe = globeRef.current;
+
+      if (globe) {
+        globe.controls().autoRotate = true;
+        globe.controls().autoRotateSpeed = 0.5;
+        
+        if (window.innerWidth < 768) {
+          globe.controls().enableZoom = false; 
+        }
+      }
+    }, 100);
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-linear-to-b from-white to-gray-50">
@@ -60,9 +93,9 @@ const GlobePage = () => {
               <div className="p-6">
                 <h2 className="text-2xl font-semibold mb-4">See where you've been</h2>
 
-                <div className="h-[600px] w-full relative">
+                <div ref={containerRef} className="w-full relative flex justify-center items-center min-h-[400px]">
                   {isLoading ? (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex items-center justify-center h-[600px] w-full">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
                     </div>
                   ) : (
@@ -77,8 +110,8 @@ const GlobePage = () => {
                       pointRadius={0.5}
                       pointAltitude={0.1}
                       pointsMerge={true}
-                      width={800}
-                      height={600}
+                      width={dimensions.width}
+                      height={dimensions.height}
                     />
                   )}
                 </div>
@@ -108,7 +141,7 @@ const GlobePage = () => {
                         {Array.from(visitedCountries)
                           .sort().map((country, idx) => (
                             <div 
-                              className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors border broder-gray-100"
+                              className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100"
                               key={idx} 
                             >
                               <MapPin className="h-4 w-4 text-red-500" />

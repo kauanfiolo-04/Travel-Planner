@@ -20,17 +20,17 @@ const SortableItem = ({ item }: { item: Location }) => {
       {...attributes}
       {...listeners}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className="p-4 border rounded-md flex justify-between items-center hover:shadow transition-shadow"
+      className="p-4 border rounded-md flex gap-2 justify-between items-center hover:shadow transition-shadow"
     >
-      <div>
-        <h4 className="font-medium text-gray-800">{item.locationTitle}</h4>
+      <div className="flex-1">
+        <h4 className="font-medium text-gray-800 max-w-[75%]">{item.locationTitle}</h4>
 
-        <p className="text-sm text-gray-500 truncate max-w-xs">
-          {`Latitude: ${item.lat}, Longitude: ${item.lng}`}
+        <p className="text-xs md:text-sm text-gray-500 truncate max-w-xs">
+          {`Lat: ${item.lat}, Long: ${item.lng}`}
         </p>
       </div>
 
-      <div className="text-sm text-gray-600">Day {item.order + 1}</div>
+      <div className="text-sm  text-gray-600">Day {item.order + 1}</div>
     </div>
   );
 }

@@ -9,10 +9,10 @@ import Link from "next/link";
 const Navbar = ({ session }: { session: Session | null }) => {
   return (
     <nav className="bg-white shadow-md py-4 border-b border-gray-200">
-      <div className="container mx-auto flex justify-between items-center px-6 lg:pg-8">
+      <div className="container mx-auto flex justify-between items-center px-2 md:px-6 lg:px-8">
         <Link href="/" className="flex items-center">
-          <Image src={"/logo.png"} alt="Logo" width={50} height={50} />
-          <span className="text-2xl font-bold text-gray-800">
+          <Image className="w-10 h-10 md:w-[50px] md:h-[50px]" src={"/logo.png"} alt="Logo" width={50} height={50} />
+          <span className="text-sm md:text-2xl font-bold text-gray-800">
             Travel Planner
           </span>
         </Link>
@@ -20,15 +20,15 @@ const Navbar = ({ session }: { session: Session | null }) => {
         <div className="flex items-center space-x-4">
           {session ? (
             <>
-              <Link className="text-slate-900 hover:text-sky-500 ease-in-out" href={"/trips"}>
+              <Link className="text-sm md:text-lg text-slate-900 hover:text-sky-500 ease-in-out" href={"/trips"}>
                 My trips
               </Link>
-              <Link className="text-slate-900 hover:text-sky-500 ease-in-out" href={"/globe"}>
+              <Link className="text-sm md:text-lg text-slate-900 hover:text-sky-500 ease-in-out" href={"/globe"}>
                 Globe
               </Link>
 
               <button 
-                className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white p-2 rounded-sm cursor-pointer"
+                className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white text-sm md:text-lg p-2 rounded-sm cursor-pointer"
                 onClick={logout}
               >
                 Sign out
@@ -36,7 +36,7 @@ const Navbar = ({ session }: { session: Session | null }) => {
             </>
           ) : (
             <button 
-              className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white p-2 rounded-sm cursor-pointer"
+              className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white text-sm md:text-lg p-2 rounded-sm cursor-pointer"
               onClick={login}
             >
               Sign in
